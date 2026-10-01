@@ -1,0 +1,95 @@
+/* 小小社区帮手：固定视口内的一张社区地图。地图上的物件和碰撞格共用坐标。 */
+.village-stage { width: min(97vw, 1160px); max-width: none; height: min(85vh, 790px); margin-top: 10vh; min-height: 0; }
+.village-shell { --ink: #264a53; --cream: #fffaf0; width: 100%; height: 100%; min-height: 0; display: flex; flex-direction: column; gap: clamp(5px, 1vh, 12px); color: var(--ink); }
+.village-hud { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding: 7px 18px; border: 2px solid #9dd6bd; border-radius: 18px; background: var(--cream); box-shadow: 0 4px 0 #b2d6ca; }
+.village-heading { flex: none; font-size: clamp(18px, 2.5vh, 30px); font-weight: 900; letter-spacing: .05em; }
+.village-missions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.village-mission { padding: 5px 11px; border-radius: 50px; background: #e4f4ec; font-size: clamp(12px, 1.8vh, 18px); font-weight: 700; white-space: nowrap; }
+.village-mission.done { background: #fff0b8; color: #766229; }
+.village-map { position: relative; width: 100%; flex: 1; min-height: 0; isolation: isolate; overflow: hidden; border: clamp(4px, .7vw, 9px) solid #e9bc87; border-radius: 26px; background: #a7dca1; box-shadow: 0 5px 0 #bd966a, 0 15px 30px rgba(40, 90, 82, .18); touch-action: none; }
+.village-tiles { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(8, 1fr); }
+.village-tile { display: flex; align-items: center; justify-content: center; min-width: 0; min-height: 0; font-size: clamp(14px, 2.6vw, 33px); cursor: pointer; }
+.village-tile.grass { background: radial-gradient(circle at 20% 70%, #c8eec0 0 4%, transparent 7%), #b6e5ad; }
+.village-tile.garden { background: radial-gradient(circle at 76% 30%, #b4e0ad 0 5%, transparent 9%), #9fd39b; }
+.village-tile.path { background: radial-gradient(ellipse at 25% 25%, rgba(255,255,255,.25) 0 7%, transparent 9%), #f3d5a8; box-shadow: inset 0 0 0 1px rgba(160, 123, 82, .05); }
+.village-tile.neighborhood { background: radial-gradient(circle at 70% 70%, #cdeacd 0 4%, transparent 8%), #bce0bc; }
+.village-tile.water { background: repeating-radial-gradient(ellipse at 30% 60%, #bce8ed 0 3px, #9ddce6 4px 12px); cursor: default; box-shadow: inset 0 0 12px #6ab8c7; }
+.village-tile.hedge { background: #74bb86; cursor: default; }
+.village-actor { position: absolute; z-index: 3; width: max(8.333%, 42px); height: max(12.5%, 42px); transform: translate(-50%, -50%); border: 0; padding: 0; background: transparent; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--ink); }
+.village-actor-icon { display: grid; place-items: center; width: min(90%, 9vh); aspect-ratio: 1; font-size: clamp(20px, 4.6vh, 50px); border: 2px solid rgba(255, 255, 255, .85); border-radius: 20px; background: #fff9eb; box-shadow: 0 4px 0 rgba(54, 84, 55, .25); transition: transform .2s; }
+.village-actor:hover .village-actor-icon, .village-actor.near .village-actor-icon { transform: translateY(-3px); border-color: #ffcb56; }
+.village-actor[data-mark="!"]::before { content: '!'; position: absolute; top: -19px; right: 2%; z-index: 5; width: 22px; height: 22px; border-radius: 50%; background: #ffbc54; color: #593c21; font: 900 18px/22px sans-serif; box-shadow: 0 2px 0 #a97942; }
+.village-door-sign { position: absolute; top: -12px; left: -10%; font-size: clamp(16px, 2.7vh, 24px); background: white; border-radius: 8px; padding: 0 2px; }
+.village-actor-label { position: absolute; top: calc(100% - 2px); max-width: 108px; padding: 2px 8px; border-radius: 15px; background: #fffaf0; white-space: nowrap; font-size: clamp(11px, 1.5vh, 15px); font-weight: 800; box-shadow: 0 2px 0 rgba(50, 74, 53, .14); }
+.village-actor[hidden] { display: none; }
+.village-player { position: absolute; z-index: 4; width: 8.333%; height: 12.5%; pointer-events: none; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; transition: left .15s linear, top .15s linear; }
+.village-player-shadow { position: absolute; width: 55%; height: 14%; left: 23%; bottom: 6%; border-radius: 50%; background: rgba(38, 77, 64, .25); }
+.village-player-face { position: relative; display: block; font-size: clamp(24px, 5.1vh, 52px); filter: drop-shadow(0 2px 1px rgba(25, 65, 62, .24)); }
+.village-player.face-left .village-player-face { transform: scaleX(-1); }
+.village-player.walking .village-player-face { animation: villageStep .18s ease-in-out infinite alternate; }
+@keyframes villageStep { to { translate: 0 -5px; } }
+.village-bottom { display: flex; gap: clamp(6px, 1vw, 14px); flex: none; min-height: clamp(110px, 17vh, 165px); }
+.village-dialogue { display: flex; gap: 10px; align-items: flex-start; flex: 1; min-width: 0; border: 2px solid #9dd6bd; border-radius: 18px; background: var(--cream); padding: clamp(9px, 1.3vh, 17px); box-shadow: 0 4px 0 #b2d6ca; }
+.village-portrait { flex: none; display: grid; place-items: center; width: clamp(48px, 6vw, 70px); aspect-ratio: 1; font-size: clamp(30px, 4vw, 49px); background: #e1f5db; border-radius: 18px; }
+.village-story { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; height: 100%; justify-content: space-between; }
+.village-line { font-size: clamp(15px, 2.35vh, 25px); font-weight: 800; line-height: 1.35; overflow-y: auto; }
+.village-choices { display: flex; gap: 8px; flex-wrap: wrap; }
+.village-choice, .village-action, .village-replay { border: 0; border-radius: 13px; cursor: pointer; font: inherit; font-weight: 800; }
+.village-action-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.village-choice { background: #f9e1ae; color: #5e492e; padding: 5px 12px; font-size: clamp(13px, 1.85vh, 19px); }
+.village-choice.selected { box-shadow: inset 0 0 0 3px #e09b40; background: #ffe6a0; }
+.village-action { align-self: flex-start; padding: 7px 14px; background: #428e84; color: white; font-size: clamp(13px, 1.75vh, 18px); }
+.village-action:disabled { background: #b5c5c1; color: #4e6564; cursor: default; }
+.village-replay { padding: 7px 12px; background: #e3f1e7; color: var(--ink); font-size: clamp(13px, 1.75vh, 18px); }
+.village-choice:active, .village-action:not(:disabled):active, .village-replay:active, .village-dir:active { transform: translateY(3px); }
+.village-controls { flex: none; width: clamp(135px, 18vw, 195px); display: grid; place-items: center; border: 2px solid #9dd6bd; border-radius: 18px; background: #e6f4eb; box-shadow: 0 4px 0 #b2d6ca; }
+.village-pad { display: grid; grid-template-areas: '. up .' 'left down right'; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; width: 92%; }
+.village-dir { min-height: 46px; border: 0; border-radius: 13px; background: #448e83; box-shadow: 0 3px 0 #256e67; color: white; font: 900 clamp(19px, 2.7vh, 28px)/1 sans-serif; cursor: pointer; touch-action: none; }
+.village-dir.up { grid-area: up; }.village-dir.left { grid-area: left; }.village-dir.down { grid-area: down; }.village-dir.right { grid-area: right; }
+.village-action:focus-visible, .village-replay:focus-visible, .village-choice:focus-visible, .village-dir:focus-visible, .village-actor:focus-visible { outline: 4px solid #ffcf51; outline-offset: 2px; }
+@media (max-width: 700px) {
+  .village-stage { height: 82vh; margin-top: 12vh; }
+  .village-hud { flex-direction: column; align-items: flex-start; gap: 3px; min-height: 58px; padding: 5px 10px; }
+  .village-heading { font-size: 19px; }
+  .village-missions { justify-content: flex-start; }
+  .village-mission { font-size: 12px; padding: 3px 8px; }
+  .village-actor-label { display: none; }
+  .village-actor-icon { width: 95%; font-size: clamp(19px, 5.1vw, 32px); border-radius: 10px; }
+  .village-player-face { font-size: clamp(22px, 6vw, 36px); }
+  .village-tile { font-size: clamp(13px, 3.8vw, 23px); }
+  .village-bottom { flex-direction: column; min-height: 0; }
+  .village-dialogue { min-height: 126px; padding: 8px; }
+  .village-line { font-size: 15px; }
+  .village-portrait { width: 40px; font-size: 28px; border-radius: 10px; }
+  .village-controls { width: 100%; min-height: 96px; padding: 4px; }
+  .village-pad { width: 165px; }
+  .village-dir { min-height: 40px; }
+}
+@media (max-width: 400px) and (max-height: 650px) and (orientation: portrait) {
+  /* 小屏竖屏不能把地图挤成几行像素；让对话和方向盘并排并滚动较长的台词。 */
+  .village-hud { min-height: 52px; }
+  .village-bottom { flex-direction: row; height: 172px; min-height: 172px; }
+  .village-dialogue { height: 100%; min-height: 0; overflow: hidden; gap: 4px; padding: 6px; }
+  .village-portrait { width: 30px; font-size: 22px; }
+  .village-story { min-height: 0; gap: 3px; }
+  .village-line { flex: 1; min-height: 0; font-size: 13px; }
+  .village-choices { max-height: 52px; overflow-y: auto; gap: 3px; }
+  .village-choice { padding: 3px 5px; font-size: 11px; }
+  .village-action-row { gap: 3px; }
+  .village-action, .village-replay { padding: 4px 5px; font-size: 11px; }
+  .village-controls { width: 100px; min-height: 0; }
+  .village-pad { width: 96px; }
+  .village-dir { min-height: 45px; }
+}
+@media (max-height: 550px) and (orientation: landscape) {
+  .village-stage { height: 79vh; margin-top: 16vh; }
+  .village-hud { flex-direction: row; min-height: 36px; padding: 3px 12px; }
+  /* 窄横屏也并排显示方向盘，避免它占掉地图将近一半的高度。 */
+  .village-bottom { flex-direction: row; min-height: 100px; }
+  .village-dialogue { min-height: 0; }
+  .village-controls { width: 140px; min-height: 0; }
+  .village-pad { width: 130px; }
+  .village-portrait { width: 44px; }
+  .village-line { font-size: 14px; }
+  .village-dir { min-height: 38px; }
+}

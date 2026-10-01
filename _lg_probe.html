@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LG自启动验证</title>
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/light-guardian.css">
+</head><body>
+<div id="app">
+  <div id="gameScreen" class="screen active">
+    <div class="topbar"><button class="icon-btn" id="backBtn">🏠</button><button class="icon-btn" id="replayBtn">🔄</button></div>
+    <div class="game-title" id="gameTitle"></div>
+    <div class="stage" id="gameStage"></div>
+  </div>
+  <div id="reward"><div class="reward-box"><div class="star">🌟</div><div class="txt" id="rewardTxt"></div></div></div>
+</div>
+<script src="js/engine/AudioManager.js"></script>
+<script src="js/engine/SpeechManager.js"></script>
+<script src="js/engine/TimerManager.js"></script>
+<script src="js/engine/RewardManager.js"></script>
+<script src="js/engine/GameManager.js"></script>
+<script src="js/games/light-guardian/config.js"></script>
+<script src="js/games/light-guardian/voice.js"></script>
+<script src="js/games/light-guardian/store.js"></script>
+<script src="js/games/light-guardian/focus.js"></script>
+<script src="js/games/light-guardian/levels.js"></script>
+<script src="js/games/light-guardian/main.js"></script>
+<script>
+  GameManager.api.exit = ()=>{};
+  const p = new URLSearchParams(location.search);
+  // 预置一些已获得贴纸，便于查看贴纸墙效果
+  if(p.has('end')){ localStorage.setItem('lg_stickers', JSON.stringify(['s1','s2','s3','s5'])); localStorage.setItem('lg_minutes','0.05'); }
+  const g = GameManager.getAll().find(x=>x.id==='light-guardian');
+  g.start(document.getElementById('gameStage'), GameManager.api);
+  if(p.has('level')){ setTimeout(()=>{ document.querySelectorAll('.lg-levelcard')[+p.get('level')].click(); }, 300); }
+</script>
+</body></html>

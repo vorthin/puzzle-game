@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>结束页手动测试</title>
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/light-guardian.css">
+</head><body>
+<div id="app">
+  <div id="gameScreen" class="screen active">
+    <div class="topbar"><button class="icon-btn">🏠</button></div>
+    <div class="stage" id="gameStage"></div>
+  </div>
+</div>
+<script src="js/engine/AudioManager.js"></script>
+<script src="js/engine/SpeechManager.js"></script>
+<script src="js/engine/TimerManager.js"></script>
+<script src="js/engine/RewardManager.js"></script>
+<script src="js/engine/GameManager.js"></script>
+<script src="js/games/light-guardian/config.js"></script>
+<script src="js/games/light-guardian/voice.js"></script>
+<script src="js/games/light-guardian/store.js"></script>
+<script src="js/games/light-guardian/focus.js"></script>
+<script src="js/games/light-guardian/levels.js"></script>
+<script src="js/games/light-guardian/main.js"></script>
+<script>
+  // 预置贴纸数据
+  localStorage.setItem('lg_stickers', JSON.stringify(['s0','s1','s2','s4','s6','s8']));
+  localStorage.setItem('lg_todayMinutes', '8');
+
+  GameManager.api.exit = ()=>{};
+  const g = GameManager.getAll().find(x=>x.id==='light-guardian');
+  g.start(document.getElementById('gameStage'), GameManager.api);
+
+  // 直接触发结束页（模拟时间到）
+  setTimeout(()=> {
+    if(window.LG_Game && window.LG_Game.showEnd) {
+      window.LG_Game.showEnd();
+    } else {
+      // LG_Game 未暴露 showEnd，手动调用内部逻辑
+      const btn = document.querySelector('.lg-bigbtn');
+      if(btn && btn.textContent.includes('开始闯关')) {
+        // 模拟玩完所有关卡
+        btn.click();
+      }
+    }
+  }, 500);
+</script>
+</body></html>

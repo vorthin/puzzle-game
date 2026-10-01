@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>宝贝益智乐园</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/light-guardian.css">
+  <link rel="stylesheet" href="css/community-helper.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ===== 主界面（卡片由 JS 自动生成，不写死） ===== -->
+  <div id="home" class="screen active">
+    <div class="topbar">
+      <button class="icon-btn" id="wallBtn" title="我的贴纸">🏅</button>
+      <button class="icon-btn" id="settingsBtn" title="家长设置">⚙️</button>
+    </div>
+    <h1>宝贝乐园</h1>
+    <div class="grid" id="homeGrid"></div>
+  </div>
+
+  <!-- ===== 贴纸墙（所有游戏的贴纸汇总） ===== -->
+  <div id="wall" class="overlay">
+    <div class="panel">
+      <h2>🏅 我的贴纸</h2>
+      <p id="wallCount"></p>
+      <div class="wall-grid" id="wallGrid"></div>
+      <button class="big" id="wallClose">关闭</button>
+    </div>
+  </div>
+
+  <!-- ===== 游戏容器（所有游戏共用，内容动态渲染） ===== -->
+  <div id="gameScreen" class="screen">
+    <div class="topbar">
+      <button class="icon-btn" id="backBtn">🏠</button>
+      <button class="icon-btn" id="replayBtn">🔄</button>
+    </div>
+    <div class="game-title" id="gameTitle"></div>
+    <div class="stage" id="gameStage"></div>
+  </div>
+
+  <!-- ===== 奖励弹层 ===== -->
+  <div id="reward">
+    <div class="reward-box">
+      <div class="star">🌟</div>
+      <div class="txt" id="rewardTxt">你真棒！</div>
+    </div>
+  </div>
+
+  <!-- ===== 家长门（算术题） ===== -->
+  <div id="gate" class="overlay">
+    <div class="panel">
+      <h2>👨‍👩‍👧 家长验证</h2>
+      <p>请回答问题进入设置</p>
+      <div class="math-q" id="mathQ"></div>
+      <input type="number" id="mathA" inputmode="numeric"><br>
+      <button class="big" id="mathSubmit">确定</button><br>
+      <button class="big" style="background:#bbb;box-shadow:0 5px 0 #999" id="gateCancel">取消</button>
+    </div>
+  </div>
+
+  <!-- ===== 家长设置 ===== -->
+  <div id="settings" class="overlay">
+    <div class="panel">
+      <h2>⚙️ 家长设置</h2>
+
+      <p>每次可以玩多长时间？</p>
+      <div class="time-opts" id="timeOpts">
+        <div class="time-opt" data-min="10">10分钟</div>
+        <div class="time-opt" data-min="15">15分钟</div>
+        <div class="time-opt" data-min="20">20分钟</div>
+        <div class="time-opt" data-min="30">30分钟</div>
+      </div>
+
+      <p>孩子年龄（自动匹配合适的游戏）</p>
+      <div class="age-opts" id="ageOpts">
+        <div class="age-opt" data-age="0">全部</div>
+        <div class="age-opt" data-age="3">3岁</div>
+        <div class="age-opt" data-age="4">4岁</div>
+        <div class="age-opt" data-age="5">5岁</div>
+        <div class="age-opt" data-age="6">6岁</div>
+      </div>
+
+      <div class="row-inline">
+        <span style="font-size:3vh;color:#555">语音朗读</span>
+        <label class="switch"><input type="checkbox" id="voiceToggle"><span class="slider"></span></label>
+      </div>
+
+      <p>开启 / 关闭游戏</p>
+      <div class="toggle-list" id="toggleList"></div>
+
+      <button class="big" id="saveSettings">保存并开始</button><br>
+      <button class="big" style="background:#84fab0;box-shadow:0 5px 0 #4fd68a" id="resetTimer">重置今天的计时</button>
+    </div>
+  </div>
+
+  <!-- ===== 时间到锁定 ===== -->
+  <div id="timeup">
+    <div class="moon">🌙</div>
+    <div class="msg">今天玩得真棒！<br>我们明天再玩吧~</div>
+    <div class="sub">（家长长按月亮3秒可解锁）</div>
+  </div>
+
+</div>
+
+<!-- ============================================================
+     脚本引入顺序很重要：
+     1) 引擎层（被游戏依赖）
+     2) 游戏模块（各自 register 到 GameManager）
+     3) app.js（最后启动，渲染界面）
+
+     >>> 加游戏：在「游戏模块」区照抄一行 <script> 即可
+     >>> 删游戏：删掉对应那一行 <script>（和 js/games 下的文件）
+     ============================================================ -->
+
+<!-- 1) 引擎层 -->
+<script src="js/engine/AudioManager.js"></script>
+<script src="js/engine/SpeechManager.js"></script>
+<script src="js/engine/TimerManager.js"></script>
+<script src="js/engine/RewardManager.js"></script>
+<script src="js/engine/Store.js"></script>
+<script src="js/engine/GameManager.js"></script>
+
+<!-- 2) 游戏模块（想加就加一行，想删就删一行） -->
+<script src="js/games/color-match.js"></script>
+<script src="js/games/pattern.js"></script>
+<script src="js/games/spot-difference.js"></script>
+<script src="js/games/emotion.js"></script>
+<script src="js/games/memory-match.js"></script>
+<script src="js/games/shadow-match.js"></script>
+<script src="js/games/listen-do.js"></script>
+<script src="js/games/community-helper.js"></script>
+
+<!-- 光之小卫士（多文件游戏：按 config→voice→store→focus→levels→main 顺序） -->
+<script src="js/games/light-guardian/config.js"></script>
+<script src="js/games/light-guardian/voice.js"></script>
+<script src="js/games/light-guardian/store.js"></script>
+<script src="js/games/light-guardian/focus.js"></script>
+<script src="js/games/light-guardian/levels.js"></script>
+<script src="js/games/light-guardian/main.js"></script>
+
+<!-- 3) 主控 -->
+<script src="js/app.js"></script>
+</body>
+</html>

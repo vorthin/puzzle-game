@@ -1,0 +1,413 @@
+/* ============================================================
+ * 《光之小卫士》样式
+ * 横屏优先，适配电视/平板/手机。字体用 clamp，按钮 >=80px，
+ * 焦点框 8px 黄色。红银蓝配色 + 胸前能量灯。
+ * 所有类名以 lg- 前缀，避免和平台其它游戏冲突。
+ * ============================================================ */
+
+/* 让游戏铺满平台的舞台区，盖住平台标题空白 */
+#gameStage:has(.lg-root) { width: 100vw; max-width: none; }
+
+.lg-root {
+  --red: #e63946; --silver: #d9dde3; --blue: #1d7fe0;
+  --lamp: #ffd23f; --focus: #ffd23f;
+  position: fixed; inset: 0; z-index: 100;
+  background: linear-gradient(180deg, #0b1e4d 0%, #3a6fd8 100%);
+  color: #fff; overflow: hidden;
+  font-size: clamp(16px, 2.4vw, 28px);
+  display: flex; flex-direction: column;
+}
+
+/* 星空点缀 */
+.lg-root::before {
+  content: ""; position: absolute; inset: 0;
+  background-image: radial-gradient(2px 2px at 20% 30%, #fff, transparent),
+    radial-gradient(2px 2px at 70% 20%, #fff, transparent),
+    radial-gradient(1px 1px at 50% 60%, #fff, transparent),
+    radial-gradient(2px 2px at 85% 70%, #fff, transparent),
+    radial-gradient(1px 1px at 30% 80%, #fff, transparent);
+  opacity: .5; pointer-events: none;
+}
+
+/* ---- 焦点框：8px 黄色（遥控器/键盘导航高亮） ---- */
+.lg-focusable { outline: none; transition: transform .12s, box-shadow .12s; }
+.lg-focusable.focused {
+  box-shadow: 0 0 0 8px var(--focus), 0 0 24px 4px rgba(255,210,63,.6) !important;
+  transform: scale(1.06); z-index: 5;
+}
+
+/* ---- 顶部条 ---- */
+.lg-bar {
+  position: relative; z-index: 3;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: clamp(8px, 1.5vh, 18px) clamp(12px, 3vw, 32px); gap: 12px;
+}
+.lg-bar-right { display: flex; gap: 12px; }
+.lg-iconbtn {
+  min-width: 80px; min-height: 80px; border: none; border-radius: 50%;
+  background: rgba(255,255,255,.15); color: #fff;
+  font-size: clamp(28px, 4vw, 40px); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.lg-iconbtn:active { transform: scale(.94); }
+.lg-timechip {
+  background: rgba(0,0,0,.3); padding: 10px 22px; border-radius: 40px;
+  font-size: clamp(18px, 2.5vw, 30px); font-weight: bold;
+}
+
+/* ---- 屏切换 ---- */
+.lg-screen { display: none; flex: 1; min-height: 0; flex-direction: column; align-items: center; justify-content: center; padding: 1vh 3vw 3vh; overflow-y: auto; position: relative; z-index: 2; }
+.lg-screen.active { display: flex; animation: lgFade .35s ease; }
+/* 高难度四对动物在矮屏会超高；从顶部开始排才能滚到第一对。 */
+#lg-play { justify-content: flex-start; }
+@keyframes lgFade { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+.lg-title { font-size: clamp(28px, 6vw, 64px); text-shadow: 0 3px 0 rgba(0,0,0,.3); text-align: center; margin: 1vh 0; }
+.lg-subtitle { font-size: clamp(15px, 2.4vw, 26px); opacity: .9; text-align: center; margin-bottom: 2vh; }
+.lg-hint { font-size: clamp(16px, 2.6vw, 30px); text-align: center; margin: 1vh 0 3vh; max-width: 90%; line-height: 1.5; }
+
+/* ---- 小卫士形象（红银蓝 + 胸前能量灯） ---- */
+.lg-hero {
+  position: relative;
+  width: clamp(160px, 28vw, 280px);
+  height: clamp(200px, 32vw, 320px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1vh;
+}
+
+/* 小卫士身体 */
+.lg-hero-body {
+  position: relative;
+  width: clamp(140px, 24vw, 240px);
+  height: clamp(180px, 28vw, 280px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 头部 - 红色圆形 */
+.lg-hero-head {
+  width: clamp(80px, 14vw, 130px);
+  height: clamp(80px, 14vw, 130px);
+  background: linear-gradient(135deg, var(--red) 0%, #ff6b6b 100%);
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 6px 20px rgba(230, 57, 70, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 头顶银色装饰 */
+.lg-hero-head::before {
+  content: "";
+  position: absolute;
+  top: -8%;
+  width: 70%;
+  height: 30%;
+  background: linear-gradient(135deg, var(--silver), #fff);
+  border-radius: 50% 50% 0 0;
+  box-shadow: inset 0 -2px 8px rgba(0,0,0,0.15);
+}
+
+/* 眼睛 */
+.lg-hero-eyes {
+  display: flex;
+  gap: clamp(12px, 2.5vw, 24px);
+  position: relative;
+  z-index: 1;
+}
+
+.lg-hero-eye {
+  width: clamp(18px, 3.5vw, 32px);
+  height: clamp(24px, 4.5vw, 40px);
+  background: #fff;
+  border-radius: 50% 50% 45% 45%;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.lg-hero-eye::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40%;
+  height: 40%;
+  background: #333;
+  border-radius: 50%;
+}
+
+/* 身体 - 银色主体 + 蓝色分割线 */
+.lg-hero-torso {
+  width: clamp(100px, 18vw, 180px);
+  height: clamp(90px, 16vw, 150px);
+  background: linear-gradient(to bottom, var(--silver) 0%, #c5cad3 100%);
+  border-radius: 20% 20% 30% 30%;
+  position: relative;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 蓝色装甲线条 */
+.lg-hero-torso::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 48%;
+  width: 4%;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--blue), #3a8ef0);
+}
+
+.lg-hero-torso::after {
+  content: "";
+  position: absolute;
+  top: 45%;
+  left: 0;
+  right: 0;
+  height: 3%;
+  background: linear-gradient(to right, transparent, var(--blue) 20%, var(--blue) 80%, transparent);
+}
+
+/* 胸前能量灯 */
+.lg-hero-lamp {
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(22px, 4.5vw, 40px);
+  height: clamp(22px, 4.5vw, 40px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff, var(--lamp) 25%, var(--red) 80%);
+  box-shadow:
+    0 0 20px 6px var(--lamp),
+    inset -2px -2px 8px rgba(0,0,0,0.2);
+  animation: lgLamp 2.5s ease-in-out infinite;
+  z-index: 2;
+}
+
+/* 打哈欠动画 */
+.lg-yawn {
+  animation: lgYawn 1.5s ease-in-out infinite;
+}
+
+@keyframes lgYawn {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.05) rotate(-2deg); }
+  50% { transform: scale(0.98) rotate(2deg); }
+  75% { transform: scale(1.02) rotate(-1deg); }
+}
+
+.lg-hero-face {
+  font-size: clamp(80px, 16vw, 170px);
+  filter: drop-shadow(0 0 20px rgba(29,127,224,.8));
+}
+@keyframes lgLamp { 0%,100% { transform: translateX(-50%) scale(1); opacity: .8; } 50% { transform: translateX(-50%) scale(1.3); opacity: 1; } }
+
+/* ---- 关卡选择卡片 ---- */
+.lg-levelgrid { display: flex; gap: clamp(12px, 3vw, 32px); flex-wrap: wrap; justify-content: center; margin: 2vh 0; }
+.lg-levelcard {
+  min-width: clamp(120px, 20vw, 200px); min-height: clamp(120px, 18vw, 180px);
+  border: none; border-radius: 28px; cursor: pointer;
+  background: rgba(255,255,255,.16); color: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  padding: 20px;
+}
+.lg-levelicon { font-size: clamp(44px, 8vw, 80px); }
+.lg-levelname { font-size: clamp(16px, 2.6vw, 30px); font-weight: bold; }
+.lg-leveltip { max-width: 18ch; font-size: clamp(12px, 1.7vw, 18px); line-height: 1.3; opacity: .78; text-align: center; }
+.lg-levelbadge { font-size: clamp(18px, 3vw, 34px); font-weight: bold; margin-bottom: 1vh; }
+
+/* ---- 关卡任务进度 ----
+   星点是「我还要做几次」的可视化，不把孩子逼进分数竞争；
+   任务内部有进度后，重复游玩有目标，结束奖励也不再显得突然。 */
+.lg-missionbar { width: min(90vw, 760px); margin: 0 auto 1.5vh; text-align: center; }
+.lg-mission-label { font-size: clamp(15px, 2.2vw, 24px); font-weight: bold; opacity: .9; margin-bottom: .6vh; }
+.lg-mission-dots { display: flex; justify-content: center; gap: clamp(8px, 1.4vw, 16px); }
+.lg-mission-dot { color: rgba(255,255,255,.35); font-size: clamp(22px, 3.2vw, 34px); transition: color .25s, transform .25s; }
+.lg-mission-dot.done { color: var(--lamp); transform: scale(1.2); text-shadow: 0 0 12px var(--lamp); }
+.lg-wavehost { width: 100%; min-height: 26vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+/* ---- 变身配对的多波过场 ---- */
+.lg-wavehost .lg-transform { animation: lgWaveIn .35s ease both; }
+@keyframes lgWaveIn { from { opacity: 0; transform: translateY(10px) scale(.97); } to { opacity: 1; transform: none; } }
+
+/* ---- 数数与左右比较 ---- */
+.lg-count-prompt { font-size: clamp(16px, 2.5vw, 28px); font-weight: bold; margin-bottom: 1vh; text-align: center; }
+.lg-count-scene { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 22vh; width: 100%; }
+.lg-count-scene.compare { flex-direction: row; gap: clamp(12px, 3vw, 42px); }
+.lg-count-group { flex: 1; min-width: 0; text-align: center; }
+.lg-count-group-title { font-size: clamp(16px, 2.4vw, 26px); font-weight: bold; margin-bottom: 1vh; opacity: .9; }
+.lg-count-rays { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: clamp(2px, .7vw, 8px); max-width: 28vw; min-height: 11vh; }
+.lg-count-ray { font-size: clamp(30px, 5.5vw, 62px); animation: lgRay .9s ease-in-out infinite; }
+.lg-compare-mark { font-size: clamp(28px, 5vw, 54px); animation: lgPulse 1.2s ease-in-out infinite; }
+.lg-count-options { display: flex; justify-content: center; flex-wrap: wrap; gap: clamp(10px, 2vw, 24px); margin-top: 2vh; }
+.lg-count-option { min-width: clamp(82px, 12vw, 150px); min-height: clamp(72px, 10vw, 112px); padding: 8px 14px; border: none; border-radius: 22px; cursor: pointer; background: #fff; color: var(--blue); font-size: clamp(22px, 3.4vw, 34px); font-weight: bold; box-shadow: 0 6px 0 rgba(0,0,0,.3); }
+.lg-count-option:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,.3); }
+.lg-count-option.done { background: var(--lamp); color: var(--red); animation: lgPop .5s; }
+
+/* ---- 呼吸星星 ---- */
+.lg-starrow { display: flex; justify-content: center; gap: clamp(10px, 2vw, 22px); margin: 1vh 0; }
+.lg-breath-star { color: rgba(255,255,255,.35); font-size: clamp(28px, 5vw, 56px); transition: color .35s, transform .35s; }
+.lg-breath-star.lit { color: var(--lamp); transform: scale(1.2); text-shadow: 0 0 14px var(--lamp); }
+
+
+/* ---- 大按钮（>=80px 高） ---- */
+.lg-bigbtn {
+  min-height: 80px; padding: 0 clamp(28px, 5vw, 56px); margin-top: 2vh;
+  border: none; border-radius: 44px; cursor: pointer;
+  background: linear-gradient(135deg, var(--red), var(--blue)); color: #fff;
+  font-size: clamp(20px, 3.2vw, 34px); font-weight: bold;
+  box-shadow: 0 6px 0 rgba(0,0,0,.3);
+}
+.lg-bigbtn:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,.3); }
+.lg-bigbtn.ghost { background: rgba(255,255,255,.2); }
+.lg-bigbtn:disabled { opacity: .5; }
+
+/* ---- 关卡1：变身配对 ---- */
+.lg-stagebox { width: 100%; display: flex; flex-direction: column; align-items: center; }
+.lg-transform { display: flex; align-items: center; justify-content: center; gap: clamp(16px, 5vw, 60px); }
+.lg-col { display: flex; flex-direction: column; gap: clamp(12px, 2.5vh, 28px); }
+.lg-beam { font-size: clamp(30px, 6vw, 60px); animation: lgPulse 1.2s ease-in-out infinite; }
+@keyframes lgPulse { 0%,100% { opacity: .4; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
+.lg-beast, .lg-friend {
+  min-width: 100px; min-height: 100px; width: clamp(100px, 15vw, 150px); height: clamp(100px, 15vw, 150px);
+  border: none; border-radius: 50%; cursor: pointer;
+  font-size: clamp(50px, 9vw, 90px);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 0 rgba(0,0,0,.3);
+}
+.lg-beast.gray { background: #8a8f99; filter: grayscale(1); }
+.lg-beast.sel { box-shadow: 0 0 0 6px #fff; }
+.lg-beast.purified { filter: none; animation: lgPop .5s; }
+.lg-friend { background: #fff; }
+.lg-beast.done, .lg-friend.done { opacity: .85; }
+@keyframes lgPop { 0% { transform: scale(1); } 50% { transform: scale(1.35) rotate(8deg); } 100% { transform: scale(1); } }
+
+/* ---- 关卡2：光线数数 ---- */
+.lg-beams { display: flex; gap: clamp(8px, 2vw, 24px); flex-wrap: wrap; justify-content: center; margin: 2vh 0 4vh; min-height: 18vh; align-items: center; }
+.lg-lightray { font-size: clamp(44px, 9vw, 90px); animation: lgRay 1.5s ease-in-out infinite; }
+@keyframes lgRay { 0%,100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 8px var(--lamp)); } 50% { transform: translateY(-12px) scale(1.1); filter: drop-shadow(0 0 20px var(--lamp)); } }
+.lg-numrow { display: flex; gap: clamp(12px, 3vw, 32px); flex-wrap: wrap; justify-content: center; }
+.lg-num {
+  min-width: 90px; min-height: 90px; width: clamp(90px, 13vw, 130px); height: clamp(90px, 13vw, 130px);
+  border: none; border-radius: 24px; cursor: pointer;
+  background: #fff; color: var(--blue); font-weight: bold;
+  font-size: clamp(40px, 7vw, 70px);
+  box-shadow: 0 6px 0 rgba(0,0,0,.3);
+}
+.lg-num.done { background: var(--lamp); color: var(--red); animation: lgPop .5s; }
+
+/* ---- 关卡3：能量灯呼吸 ---- */
+.lg-lampwrap { height: 34vh; display: flex; align-items: center; justify-content: center; margin: 1vh 0; }
+.lg-lamp {
+  width: clamp(90px, 18vw, 180px); height: clamp(90px, 18vw, 180px); border-radius: 50%;
+  box-shadow: 0 0 40px 10px var(--lamp);
+  transition: transform var(--lg-breath-ms, 2.6s) ease-in-out;
+}
+.lg-lamp.inhale { transform: scale(2); }
+.lg-lamp.exhale { transform: scale(1); }
+.lg-breathe-label { font-size: clamp(20px, 3.5vw, 40px); font-weight: bold; margin: 2vh 0; text-align: center; }
+
+/* ---- 提示条 / 闪现消息（只出现鼓励语） ---- */
+.lg-toast, .lg-flash {
+  position: fixed; left: 50%; transform: translateX(-50%) translateY(20px);
+  bottom: 8vh; background: rgba(0,0,0,.75); color: #fff;
+  padding: 16px 36px; border-radius: 40px; font-size: clamp(18px, 3vw, 30px);
+  opacity: 0; transition: .3s; z-index: 500; pointer-events: none; white-space: nowrap;
+}
+.lg-flash { top: 14vh; bottom: auto; background: rgba(255,210,63,.95); color: #7a4b00; font-weight: bold; }
+.lg-toast.show, .lg-flash.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.lg-shake { animation: lgShake .4s; }
+@keyframes lgShake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+
+/* ---- 结束页 ---- */
+.lg-endface { font-size: clamp(80px, 18vw, 180px); }
+.lg-endface.lg-yawn { animation: lgYawn 2.5s ease-in-out infinite; }
+@keyframes lgYawn { 0%,100% { transform: scale(1) rotate(0); } 40% { transform: scale(1.15) rotate(-5deg); } 60% { transform: scale(1.15) rotate(5deg); } }
+.lg-taskbox {
+  background: rgba(255,255,255,.16); border-radius: 28px; padding: clamp(16px,3vh,28px) clamp(20px,5vw,44px);
+  margin: 2vh 0; text-align: center; max-width: 90%;
+}
+.lg-taskicon { font-size: clamp(50px, 10vw, 90px); }
+.lg-tasktext { font-size: clamp(18px, 3vw, 32px); white-space: pre-line; line-height: 1.5; margin-top: 1vh; }
+
+/* ---- 贴纸墙 ---- */
+.lg-wall { margin: 2vh 0; text-align: center; }
+.lg-wall-title { font-size: clamp(18px, 3vw, 32px); font-weight: bold; margin-bottom: 1.5vh; }
+.lg-wall-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: clamp(8px, 1.5vw, 16px); max-width: min(90vw, 520px); }
+.lg-wall-cell {
+  aspect-ratio: 1; border-radius: 18px; background: rgba(255,255,255,.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: clamp(28px, 6vw, 52px);
+}
+.lg-wall-cell.got { background: rgba(255,210,63,.28); box-shadow: inset 0 0 0 3px var(--lamp); }
+
+/* ---- 弹层：暂停 / 家长门 / 设置 ---- */
+.lg-overlay { position: fixed; inset: 0; background: rgba(5,10,30,.8); display: none; align-items: center; justify-content: center; z-index: 600; }
+.lg-overlay.show { display: flex; animation: lgFade .3s; }
+.lg-panel {
+  background: #16244e; border: 3px solid rgba(255,255,255,.15); border-radius: 32px;
+  padding: clamp(24px, 4vh, 44px) clamp(24px, 5vw, 56px); text-align: center;
+  max-width: 92vw; width: 480px; max-height: 90vh; overflow-y: auto;
+  display: flex; flex-direction: column; align-items: center; gap: 1.2vh;
+}
+.lg-panel.wide { width: 620px; }
+.lg-panel h2 { font-size: clamp(24px, 4vw, 40px); }
+.lg-panel p { font-size: clamp(15px, 2.4vw, 26px); opacity: .85; margin-top: 1vh; }
+.lg-todaytip { color: var(--lamp) !important; opacity: 1 !important; }
+
+.lg-optrow { display: flex; gap: clamp(8px, 2vw, 18px); flex-wrap: wrap; justify-content: center; }
+.lg-opt {
+  min-width: 80px; min-height: 60px; padding: 0 clamp(14px, 3vw, 26px);
+  border: 3px solid rgba(255,255,255,.25); border-radius: 20px; cursor: pointer;
+  background: transparent; color: #fff; font-size: clamp(16px, 2.6vw, 28px);
+}
+.lg-opt.sel { border-color: var(--lamp); background: rgba(255,210,63,.2); color: var(--lamp); font-weight: bold; }
+
+/* 家长门：长按按钮 */
+.lg-holdbtn {
+  min-height: 90px; padding: 0 clamp(30px, 6vw, 60px); border: none; border-radius: 44px;
+  background: rgba(255,255,255,.15); color: #fff; cursor: pointer; position: relative; overflow: hidden;
+  font-size: clamp(18px, 3vw, 30px);
+}
+.lg-holdbtn::after {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: rgba(255,210,63,.4);
+}
+.lg-holdbtn.holding::after { width: 100%; transition: width 3s linear; }
+.lg-mathwrap { display: flex; flex-direction: column; align-items: center; gap: 1.5vh; margin-top: 1vh; }
+.lg-mathq { font-size: clamp(30px, 5vw, 50px); font-weight: bold; }
+.lg-mathinput { font-size: clamp(28px, 5vw, 48px); width: 55%; text-align: center; padding: 8px; border-radius: 16px; border: 3px solid rgba(255,255,255,.3); background: #fff; color: #16244e; }
+
+/* 竖屏或矮横屏缩小成对的伙伴，仍保持可点面积，并允许关卡屏滚动。 */
+@media (max-width: 700px), (max-height: 600px) {
+  .lg-iconbtn { min-width: 56px; min-height: 56px; }
+  .lg-levelcard { min-width: 110px; min-height: 110px; padding: 12px; }
+  .lg-hint { margin: 1vh 0; }
+  .lg-wavehost { min-height: 0; }
+  .lg-col { gap: 8px; }
+  .lg-beast, .lg-friend { min-width: 72px; min-height: 72px; width: clamp(72px, 12vh, 105px); height: clamp(72px, 12vh, 105px); font-size: clamp(36px, 7vh, 62px); }
+  .lg-lampwrap { height: 24vh; }
+  .lg-count-ray { font-size: clamp(28px, 6vw, 48px); }
+  .lg-count-option { min-width: 75px; min-height: 68px; font-size: clamp(18px, 3vw, 26px); }
+}
+
+/* ---- 竖屏提示：建议横屏 ---- */
+@media (orientation: portrait) {
+  .lg-root::after {
+    content: "🔄 把设备横过来玩更好哦";
+    position: fixed; bottom: 2vh; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,.6); padding: 8px 20px; border-radius: 30px;
+    font-size: clamp(13px, 3.5vw, 18px); z-index: 100; white-space: nowrap;
+  }
+}
+
+
+
